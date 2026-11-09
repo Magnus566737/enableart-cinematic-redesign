@@ -1,0 +1,9 @@
+{
+  "name": "enableart-cinematic-redesign",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Scroll-driven cinematic 3D landing page for EnableArt (static, no build step).",
+  "scripts": {
+    "start": "npx --yes serve . -l 8080"
+  }
+}
