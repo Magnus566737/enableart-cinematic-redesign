@@ -20,6 +20,11 @@ a:hover{color:#A9CDFF}
 *{box-sizing:border-box}
 @keyframes ea-hint{0%{transform:translateY(-100%)}100%{transform:translateY(200%)}}
 @keyframes ea-spin{to{transform:rotate(360deg)}}
+.ea-logo{position:relative;display:block;flex-shrink:0;height:var(--h);aspect-ratio:649/119}
+.ea-logo img{position:absolute;inset:0;width:100%;height:100%;display:block;max-width:none}
+.ea-logo-mark{clip-path:inset(0 71.5% 0 0)}
+.ea-logo-text{clip-path:inset(0 0 0 28.5%);filter:brightness(0) invert(1)}
+
 @keyframes ea-sweep{0%{transform:translateX(-130%) skewX(-18deg)}60%,100%{transform:translateX(230%) skewX(-18deg)}}
 .ea-cta{position:relative;display:block;overflow:hidden;isolation:isolate;cursor:pointer;-webkit-tap-highlight-color:transparent;outline:2px solid transparent;outline-offset:2px;will-change:transform;
   transition:transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s ease,filter .35s ease,outline-color .25s ease,outline-offset .25s ease;
@@ -44,7 +49,7 @@ a:hover{color:#A9CDFF}
 <div style="background:#050A14;overflow-x:clip">
 
 <div ref="{{ loaderRef }}" style="position:fixed;inset:0;z-index:100;background:#050A14;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;transition:opacity .8s ease,visibility .8s;opacity:{{ loaderOpacity }};visibility:{{ loaderVis }}">
-  <img src="https://www.enableart.ai/images/logo.png" alt="EnableArt" style="height:30px;width:auto;display:block;filter:{{ logoFilter }}">
+  <span class="ea-logo" style="--h:30px;"><img src="https://www.enableart.ai/images/logo.png" alt="EnableArt" class="ea-logo-mark"><img src="https://www.enableart.ai/images/logo.png" alt="" aria-hidden="true" class="ea-logo-text"></span>
   <div style="width:200px;height:2px;border-radius:2px;background:rgba(255,255,255,.1);overflow:hidden">
     <div ref="{{ barRef }}" style="height:100%;width:8%;background:linear-gradient(90deg,#3B91FF,#9CC6FF);border-radius:2px;transition:width .3s ease"></div>
   </div>
@@ -53,7 +58,7 @@ a:hover{color:#A9CDFF}
 
 <header style="position:fixed;top:0;left:0;right:0;z-index:60;background:linear-gradient(180deg,rgba(5,10,20,.94) 0%,rgba(5,10,20,.8) 60%,rgba(5,10,20,0) 100%);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);">
   <div style="max-width:1360px;margin:0 auto;padding:0 clamp(20px,3vw,40px);height:72px;display:flex;align-items:center;justify-content:space-between;gap:24px">
-    <a href="#top" onClick="{{ goIntro }}" style="display:flex;align-items:center;flex-shrink:0"><img src="https://www.enableart.ai/images/logo.png" alt="EnableArt" style="height:26px;width:auto;display:block;filter:{{ logoFilter }}"></a>
+    <a href="#top" onClick="{{ goIntro }}" style="display:flex;align-items:center;flex-shrink:0"><span class="ea-logo" style="--h:26px;"><img src="https://www.enableart.ai/images/logo.png" alt="EnableArt" class="ea-logo-mark"><img src="https://www.enableart.ai/images/logo.png" alt="" aria-hidden="true" class="ea-logo-text"></span></a>
     <sc-if value="{{ desktop }}" hint-placeholder-val="{{ true }}">
       <nav style="display:flex;align-items:center;gap:2px;padding:4px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)">
         <sc-for list="{{ navLinks }}" as="l" hint-placeholder-count="6">
@@ -371,7 +376,7 @@ a:hover{color:#A9CDFF}
   <div style="max-width:1240px;margin:0 auto">
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:40px">
       <div style="display:flex;flex-direction:column;gap:18px;max-width:300px">
-        <img src="https://www.enableart.ai/images/logo.png" alt="EnableArt" style="height:26px;width:auto;align-self:flex-start;filter:{{ logoFilter }}">
+        <span class="ea-logo" style="--h:26px;align-self:flex-start;"><img src="https://www.enableart.ai/images/logo.png" alt="EnableArt" class="ea-logo-mark"><img src="https://www.enableart.ai/images/logo.png" alt="" aria-hidden="true" class="ea-logo-text"></span>
         <p style="font-size:14.5px;line-height:1.55;color:#8D9AB4;margin:0">AI-powered platform for generating, editing, and publishing marketing creative for teams and agencies.</p>
         <div style="display:flex;gap:8px">
           <sc-for list="{{ socials }}" as="s" hint-placeholder-count="4">
@@ -411,7 +416,7 @@ a:hover{color:#A9CDFF}
 
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;motion&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;full&quot;,&quot;reduced&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;'auto'|'full'|'reduced'&quot;,&quot;section&quot;:&quot;Experience&quot;},&quot;inertia&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:0.03,&quot;max&quot;:0.3,&quot;step&quot;:0.01,&quot;default&quot;:0.14,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Experience&quot;},&quot;showRail&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Experience&quot;},&quot;logoTreatment&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;white&quot;,&quot;original&quot;],&quot;default&quot;:&quot;white&quot;,&quot;tsType&quot;:&quot;'white'|'original'&quot;,&quot;section&quot;:&quot;Brand&quot;},&quot;billingDefault&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;monthly&quot;,&quot;yearly&quot;],&quot;default&quot;:&quot;monthly&quot;,&quot;tsType&quot;:&quot;'monthly'|'yearly'&quot;,&quot;section&quot;:&quot;Pricing&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;motion&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;full&quot;,&quot;reduced&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;'auto'|'full'|'reduced'&quot;,&quot;section&quot;:&quot;Experience&quot;},&quot;inertia&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:0.03,&quot;max&quot;:0.3,&quot;step&quot;:0.01,&quot;default&quot;:0.14,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Experience&quot;},&quot;showRail&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Experience&quot;},&quot;logoTreatment&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;white&quot;,&quot;original&quot;],&quot;default&quot;:&quot;original&quot;,&quot;tsType&quot;:&quot;'white'|'original'&quot;,&quot;section&quot;:&quot;Brand&quot;},&quot;billingDefault&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;monthly&quot;,&quot;yearly&quot;],&quot;default&quot;:&quot;monthly&quot;,&quot;tsType&quot;:&quot;'monthly'|'yearly'&quot;,&quot;section&quot;:&quot;Pricing&quot;}}">
 const STOPS = [
   { id: 'intro', a: 0, b: 0.03, cam: [0, 0, 1300, 0, 0] },
   { id: 'about', a: 0.11, b: 0.17, cam: [-40, 0, -1100, 0, -2], fx: 440 },
@@ -597,7 +602,7 @@ class Component extends DCLogic {
     const R = (k, f) => (typeof window !== 'undefined' && window.__resources && window.__resources[k]) || I + f;
     const desktop = this.state.w >= 900;
     const yearly = (this.state.billing ?? this.props.billingDefault ?? 'monthly') === 'yearly';
-    const logoFilter = (this.props.logoTreatment ?? 'white') === 'white' ? 'brightness(0) invert(1)' : 'none';
+    const logoFilter = (this.props.logoTreatment ?? 'original') === 'white' ? 'brightness(0) invert(1)' : 'none';
 
     const side = (left) => desktop
       ? { align: 'center', justify: left ? 'flex-start' : 'flex-end', pad: left ? '0 0 0 max(32px,6vw)' : '0 max(120px,9vw) 0 0', w: 'min(470px,40vw)', scrim: left ? 'linear-gradient(90deg,rgba(5,10,20,.88) 0%,rgba(5,10,20,.55) 35%,rgba(5,10,20,0) 60%)' : 'linear-gradient(270deg,rgba(5,10,20,.88) 0%,rgba(5,10,20,.55) 35%,rgba(5,10,20,0) 60%)' }

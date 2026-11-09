@@ -29,6 +29,8 @@ A scroll-driven, 3D cinematic landing page for **EnableArt**, the AI marketing c
 .
 ├── index.html        # The page: markup, styles and the component script (<x-dc> format)
 ├── support.js        # "dc" runtime that renders index.html (generated file, do not edit)
+├── assets/           # Reference copies of the EnableArt logo and favicon
+├── scripts/          # download_logos.py – re-downloads logo.png and favicon.png
 ├── vercel.json       # Static-hosting config for Vercel
 ├── package.json      # Convenience `npm start` script (no dependencies)
 └── docs/screenshots/ # Screenshots used in this README
@@ -77,4 +79,4 @@ Scroll pacing is controlled by `WARP_T` (how much of the scroll track the openin
 
 ## Assets and licensing
 
-Brand imagery and the EnableArt logo are served from enableart.ai and belong to EnableArt; they are not stored in this repository. No license is granted for reuse of the brand assets. No API keys or credentials are used or stored.
+Brand imagery and the EnableArt logo belong to EnableArt. The page loads its images from `https://www.enableart.ai/images/`; `assets/logo.png` and `assets/favicon.png` are reference copies fetched by `scripts/download_logos.py`. No license is granted for reuse of the brand assets. No API keys or credentials are used or stored.
