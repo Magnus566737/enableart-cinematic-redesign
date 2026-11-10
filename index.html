@@ -21,6 +21,11 @@ a:hover{color:#A9CDFF}
 *{box-sizing:border-box}
 @keyframes ea-hint{0%{transform:translateY(-100%)}100%{transform:translateY(200%)}}
 @keyframes ea-spin{to{transform:rotate(360deg)}}
+.ea-fcard{width:740px;transform:translate3d(var(--xm),0,var(--z)) rotateY(var(--ry)) translate(-50%,-50%)}
+.ea-step{--w:500px;--gap:60px;width:var(--w);transform:translate3d(calc(var(--s) * (var(--w) + var(--gap))),240px,var(--z)) rotateY(var(--ry)) translate(-50%,-50%)}
+@media (min-width:900px){.ea-fcard{width:clamp(380px,45vw,640px);transform:translate3d(calc(var(--sg) * clamp(170px,400px - 18vw,240px) - (var(--sg) + 1) * 20px),0,var(--z)) rotateY(var(--ry)) translate(-50%,-50%)}.ea-step{--w:clamp(300px,27vw,500px);--gap:40px}}
+.ea-about{width:860px;transform:translate3d(440px,0,-2400px) rotateY(-16deg) translate(-50%,-50%)}
+@media (min-width:900px){.ea-about{width:clamp(440px,45vw,640px);transform:translate3d(170px,0,-2400px) rotateY(-16deg) translate(-50%,-50%)}}
 .ea-logo{position:relative;display:block;flex-shrink:0;height:var(--h);aspect-ratio:649/119}
 .ea-logo img{position:absolute;inset:0;width:100%;height:100%;display:block;max-width:none}
 .ea-logo-mark{clip-path:inset(0 71.5% 0 0)}
@@ -148,7 +153,7 @@ a:hover{color:#A9CDFF}
         <img src="https://www.enableart.ai/images/slide05.png" alt="EnableArt design example 5" style="width:100%;aspect-ratio:1312/816;object-fit:cover;display:block;border-radius:16px;background:#0F1A2E;box-shadow:0 40px 80px -30px rgba(0,0,0,.85)">
       </div>
 
-      <div data-obj="1" data-z="-2400" style="position:absolute;left:0;top:0;width:860px;transform:translate3d(440px,0,-2400px) rotateY(-16deg) translate(-50%,-50%);transform-style:preserve-3d">
+      <div data-obj="1" data-z="-2400" class="ea-about" style="position:absolute;left:0;top:0;transform-style:preserve-3d">
         <div style="position:absolute;inset:8% -5% -7% 10%;border-radius:26px;background:linear-gradient(160deg,rgba(30,126,247,.5),rgba(30,126,247,.08));transform:translateZ(-80px)"></div>
         <img src="https://www.enableart.ai/images/aboutImg.png" alt="Team creating marketing designs with EnableArt" style="position:relative;width:100%;aspect-ratio:1408/768;object-fit:cover;display:block;border-radius:22px;background:#0F1A2E;box-shadow:0 60px 110px -40px rgba(0,0,0,.9),0 0 0 1px rgba(255,255,255,.08);-webkit-box-reflect:below 14px linear-gradient(transparent 74%,rgba(255,255,255,.12))">
         <div style="position:absolute;right:-6%;bottom:-9%;transform:translateZ(120px);padding:14px 18px;border-radius:16px;background:rgba(10,20,38,.92);border:1px solid rgba(255,255,255,.12);color:#fff;font-size:15px;font-weight:500;display:flex;align-items:center;gap:10px;box-shadow:0 30px 50px -20px rgba(0,0,0,.8)"><span style="width:8px;height:8px;border-radius:50%;background:#3B91FF"></span>Instant preview &amp; download</div>
@@ -158,7 +163,7 @@ a:hover{color:#A9CDFF}
       </div>
 
       <sc-for list="{{ featureObjs }}" as="f" hint-placeholder-count="0">
-        <div data-obj="1" data-z="{{ f.z }}" style="position:absolute;left:0;top:0;width:740px;transform:{{ f.transform }};transform-style:preserve-3d">
+        <div data-obj="1" data-z="{{ f.z }}" class="ea-fcard" style="position:absolute;left:0;top:0;transform-style:preserve-3d;--xm:{{ f.xm }}px;--sg:{{ f.sg }};--z:{{ f.z }}px;--ry:{{ f.ry }}deg">
           <div style="position:absolute;inset:-6% -6% -6% -6%;border-radius:34px;background:radial-gradient(60% 60% at 50% 50%,rgba(30,126,247,.35),transparent 70%);transform:translateZ(-140px)"></div>
           <div style="position:relative;background:linear-gradient(180deg,#F7F8F5,#E9EBE6);border-radius:24px;padding:14px;box-shadow:0 1px 0 #fff inset,0 60px 110px -40px rgba(0,0,0,.9);-webkit-box-reflect:below 14px linear-gradient(transparent 76%,rgba(255,255,255,.1))">
             <div style="aspect-ratio:4/3;border-radius:14px;background:#FFFFFF;display:flex;align-items:center;justify-content:center;overflow:hidden">
@@ -174,7 +179,7 @@ a:hover{color:#A9CDFF}
         <img src="https://www.enableart.ai/images/howitswork.jpg" alt="Three-step EnableArt design creation workflow" style="width:100%;aspect-ratio:612/408;object-fit:cover;display:block;border-radius:18px;background:#0F1A2E;box-shadow:0 40px 80px -30px rgba(0,0,0,.85),0 0 0 1px rgba(255,255,255,.08)">
       </div>
       <sc-for list="{{ stepObjs }}" as="s" hint-placeholder-count="0">
-        <div data-obj="1" data-z="{{ s.z }}" style="position:absolute;left:0;top:0;width:500px;transform:{{ s.transform }}">
+        <div data-obj="1" data-z="{{ s.z }}" class="ea-step" style="position:absolute;left:0;top:0;--s:{{ s.i }};--z:{{ s.z }}px;--ry:{{ s.ry }}deg">
           <div style="position:relative;background:linear-gradient(180deg,rgba(26,40,66,.92),rgba(12,22,40,.92));border:1px solid rgba(255,255,255,.12);border-radius:24px;padding:32px;min-height:340px;display:flex;flex-direction:column;gap:16px;box-shadow:0 1px 0 rgba(255,255,255,.08) inset,0 50px 90px -40px rgba(0,0,0,.9);-webkit-box-reflect:below 14px linear-gradient(transparent 78%,rgba(255,255,255,.08))">
             <div style="display:flex;justify-content:space-between;align-items:center">
               <span style="font-family:'Geist Mono',monospace;font-size:13px;color:#6FAEFF">Step {{ s.n }}</span>
@@ -194,7 +199,7 @@ a:hover{color:#A9CDFF}
       <div data-obj="1" data-z="-12600" style="position:absolute;left:0;top:0;width:0;height:0;transform:translate3d(0,0,-13500px);transform-style:preserve-3d">
         <div ref="{{ ringRef }}" style="position:absolute;left:0;top:0;width:0;height:0;transform-style:preserve-3d">
           <sc-for list="{{ templateObjs }}" as="t" hint-placeholder-count="0">
-            <a href="https://www.enableart.ai/register" style="position:absolute;left:0;top:0;width:580px;transform:{{ t.transform }};backface-visibility:hidden;-webkit-backface-visibility:hidden;display:block;color:#0C1220;background:linear-gradient(180deg,#F7F8F5,#E9EBE6);border-radius:22px;padding:10px;box-shadow:0 1px 0 #fff inset,0 50px 90px -40px rgba(0,0,0,.9);transition:box-shadow .3s" style-hover="color:#0C1220;box-shadow:0 1px 0 #fff inset,0 50px 90px -40px rgba(0,0,0,.9),0 0 0 3px #1E7EF7">
+            <a href="https://www.enableart.ai/register" style="position:absolute;left:0;top:0;width:580px;transform:{{ t.transform }};transform-origin:0 0;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:block;color:#0C1220;background:linear-gradient(180deg,#F7F8F5,#E9EBE6);border-radius:22px;padding:10px;box-shadow:0 1px 0 #fff inset,0 50px 90px -40px rgba(0,0,0,.9);transition:box-shadow .3s" style-hover="color:#0C1220;box-shadow:0 1px 0 #fff inset,0 50px 90px -40px rgba(0,0,0,.9),0 0 0 3px #1E7EF7">
               <div role="img" aria-label="EnableArt template preview: {{ t.name }}" style="width:100%;aspect-ratio:1312/816;border-radius:14px;background-color:#DDE0DA;background-image:url({{ t.img }});background-size:cover;background-position:center"></div>
               <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 10px 6px">
                 <div>
@@ -348,7 +353,7 @@ a:hover{color:#A9CDFF}
       <a href="https://www.enableart.ai/blog" style="font-size:15px;font-weight:500">All articles →</a>
     </div>
     <a href="https://www.enableart.ai/blog/black-friday-banners-ai" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));background:#0B1424;border:1px solid rgba(255,255,255,.08);border-radius:24px;overflow:hidden;color:#fff;transition:border-color .3s" style-hover="color:#fff;border-color:rgba(111,174,255,.5)">
-      <img src="https://www.enableart.ai/images/blog/black-friday-banners-ai/hero-grid.png" alt="Black Friday banner set across story, feed and countdown formats" style="width:100%;height:100%;min-height:280px;object-fit:cover;display:block;background:#0F1A2E">
+      <img src="https://www.enableart.ai/images/blog/black-friday-banners-ai/hero-grid.png" alt="Black Friday banner set across story, feed and countdown formats" style="width:100%;height:auto;aspect-ratio:1200/630;align-self:center;object-fit:cover;display:block;background:#0F1A2E">
       <div style="padding:clamp(28px,4vw,48px);display:flex;flex-direction:column;justify-content:center;gap:16px">
         <div style="display:flex;gap:12px;align-items:center;font-size:13px;color:#8D9AB4"><span style="padding:4px 10px;border-radius:999px;background:rgba(30,126,247,.18);color:#CFE3FF;font-weight:500">Guides</span>By EnableArt · Nov 12, 2026</div>
         <div style="font-size:clamp(24px,2.6vw,34px);line-height:1.15;letter-spacing:-0.025em;font-weight:600;text-wrap:balance">How to Make Black Friday Sale Banners with AI (2026)</div>
@@ -606,7 +611,7 @@ class Component extends DCLogic {
     const logoFilter = (this.props.logoTreatment ?? 'original') === 'white' ? 'brightness(0) invert(1)' : 'none';
 
     const side = (left) => desktop
-      ? { align: 'center', justify: left ? 'flex-start' : 'flex-end', pad: left ? '0 0 0 max(32px,6vw)' : '0 max(120px,9vw) 0 0', w: 'min(470px,40vw)', scrim: left ? 'linear-gradient(90deg,rgba(5,10,20,.88) 0%,rgba(5,10,20,.55) 35%,rgba(5,10,20,0) 60%)' : 'linear-gradient(270deg,rgba(5,10,20,.88) 0%,rgba(5,10,20,.55) 35%,rgba(5,10,20,0) 60%)' }
+      ? { align: 'center', justify: left ? 'flex-start' : 'flex-end', pad: left ? '0 0 0 max(32px,6vw)' : '0 max(150px,11vw) 0 0', w: 'min(470px,40vw)', scrim: left ? 'linear-gradient(90deg,rgba(5,10,20,.88) 0%,rgba(5,10,20,.55) 35%,rgba(5,10,20,0) 60%)' : 'linear-gradient(270deg,rgba(5,10,20,.88) 0%,rgba(5,10,20,.55) 35%,rgba(5,10,20,0) 60%)' }
       : { align: 'flex-end', justify: 'flex-start', pad: '0 22px 32px', w: '100%', scrim: 'linear-gradient(0deg,rgba(5,10,20,.97) 0%,rgba(5,10,20,.85) 42%,rgba(5,10,20,0) 68%)' };
 
     const featData = [
@@ -617,7 +622,7 @@ class Component extends DCLogic {
     const featZ = [-4600, -6600, -8600];
     const featureObjs = featData.map((f, i) => {
       const left = i % 2 === 0;
-      return { ...f, z: featZ[i], chipSide: left ? '4%' : '62%', transform: `translate3d(${left ? -400 : 400}px,0,${featZ[i]}px) rotateY(${left ? 16 : -16}deg) translate(-50%,-50%)` };
+      return { ...f, z: featZ[i], chipSide: left ? '4%' : '62%', xm: left ? -400 : 400, sg: left ? -1 : 1, ry: left ? 16 : -16 };
     });
     const featureOverlays = featData.map((f, i) => ({ ...f, a: STOPS[i + 2].a, b: STOPS[i + 2].b, side: side(i % 2 === 1), last: i === 2 }));
 
@@ -628,7 +633,7 @@ class Component extends DCLogic {
     ];
     const stepObjs = steps.map((s, i) => {
       const x = (i - 1) * 560, z = i === 1 ? -11000 : -10860, ry = (1 - i) * 12;
-      return { ...s, z, transform: `translate3d(${x}px,240px,${z}px) rotateY(${ry}deg) translate(-50%,-50%)` };
+      return { ...s, z, i: i - 1, ry };
     });
     const templateObjs = ['Best Offer', 'Nebula Core', 'Coastal Vibes', 'Daily Boost', 'New Arrival', 'Grid Flux'].map((name, i) => ({
       name, img: R('banner0' + (i + 1), 'banner0' + (i + 1) + '.png'),
