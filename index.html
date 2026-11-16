@@ -464,62 +464,18 @@ class Component extends DCLogic {
     window.addEventListener('mousemove', this.onM, { passive: true });
     this.ps = this.targetP();
     this.trackLoading();
-    this.setupAuto();
     // Lenis smooth scroll (skipped for reduced-motion). Its raf runs first in the page's single
     // animation loop so the cinematic camera always reads the freshly smoothed scroll position.
     if (window.Lenis && !this.sysReduced) { this.lenis = new Lenis(); window.__lenis = this.lenis; }
-    const loop = t => { if (this.lenis) this.lenis.raf(t); this.frame(t); this.auto(t); this.raf = requestAnimationFrame(loop); };
+    const loop = t => { if (this.lenis) this.lenis.raf(t); this.frame(t); this.raf = requestAnimationFrame(loop); };
     this.raf = requestAnimationFrame(loop);
   }
   componentWillUnmount() {
-    cancelAnimationFrame(this.raf); clearTimeout(this.loadTimer); this.teardownAuto(); if (this.lenis) { this.lenis.destroy(); this.lenis = null; window.__lenis = null; }
+    cancelAnimationFrame(this.raf); clearTimeout(this.loadTimer); if (this.lenis) { this.lenis.destroy(); this.lenis = null; window.__lenis = null; }
     cancelAnimationFrame(this.rzRaf);
     window.removeEventListener('resize', this.onR);
     window.removeEventListener('load', this.onLoad);
     window.removeEventListener('mousemove', this.onM);
-  }
-  // ---- Automatic scrolling -------------------------------------------------
-  // Slow, constant-speed drift down the page. Any user input pauses it at once and it
-  // resumes after AUTO_IDLE ms without interaction. Manual scrolling always wins.
-  setupAuto() {
-    this.au = { pos: null, expect: 0, last: 0, active: performance.now(), touching: false, hover: false, ramp: 0, lx: -1, ly: -1 };
-    const a = this.au;
-    const act = () => { a.active = performance.now(); a.pos = null; a.ramp = 0; };
-    const INTERACTIVE = 'a,button,input,select,textarea,summary,label,[role=button],[onclick],.ea-cta';
-    this.auH = {
-      wheel: act, keydown: act, mousedown: act, pointerdown: act,
-      touchstart: () => { a.touching = true; act(); },
-      touchmove: act,
-      touchend: () => { a.touching = false; act(); },
-      touchcancel: () => { a.touching = false; act(); },
-      mousemove: e => { if (Math.abs(e.clientX - a.lx) + Math.abs(e.clientY - a.ly) > 2) { a.lx = e.clientX; a.ly = e.clientY; act(); } },
-      mouseover: e => { a.hover = !!(e.target.closest && e.target.closest(INTERACTIVE)); },
-      mouseleave: () => { a.hover = false; },
-    };
-    Object.keys(this.auH).forEach(k => window.addEventListener(k, this.auH[k], { passive: true, capture: true }));
-    document.documentElement.addEventListener('mouseleave', this.auH.mouseleave);
-  }
-  teardownAuto() {
-    if (!this.auH) return;
-    Object.keys(this.auH).forEach(k => window.removeEventListener(k, this.auH[k], { capture: true }));
-    document.documentElement.removeEventListener('mouseleave', this.auH.mouseleave);
-  }
-  auto(now) {
-    const a = this.au; if (!a) return;
-    const dt = a.last ? Math.min(50, now - a.last) / 1000 : 0; a.last = now;
-    const AUTO_SPEED = 140, AUTO_IDLE = 2500, AUTO_RAMP = 1.4;
-    if (!this.state.loaded) { a.active = now; return; }
-    if (this.reduced() || document.hidden || this.state.menu || a.touching || a.hover || now - a.active < AUTO_IDLE) { a.pos = null; a.ramp = 0; return; }
-    const max = document.documentElement.scrollHeight - window.innerHeight, cur = window.scrollY;
-    if (a.pos === null) { a.pos = cur; a.expect = cur; }
-    else if (Math.abs(cur - a.expect) > 2) { a.active = now; a.pos = null; a.ramp = 0; return; } // scrolled by something else (scrollbar, link, keys)
-    if (cur >= max - 1) { a.ramp = 0; return; } // stop at the bottom; never wraps to the top
-    a.ramp = Math.min(1, a.ramp + dt / AUTO_RAMP);
-    const ease = a.ramp * a.ramp * (3 - 2 * a.ramp);
-    const tail = Math.min(1, 0.15 + (max - a.pos) / 250); // glide to a stop near the bottom
-    a.pos = Math.min(max, a.pos + AUTO_SPEED * ease * tail * dt);
-    if (this.lenis) this.lenis.scrollTo(a.pos, { immediate: true, force: true }); else window.scrollTo(0, a.pos);
-    a.expect = a.pos;
   }
   reduced() { const m = this.props.motion ?? 'auto'; return m === 'reduced' || (m === 'auto' && this.sysReduced); }
   trackLoading() {
