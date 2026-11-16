@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://unpkg.com/lenis@1.1.14/dist/lenis.min.js"></script>
 <script src="./support.js"></script>
 </head>
 <body>
@@ -21,6 +22,9 @@ a:hover{color:#A9CDFF}
 *{box-sizing:border-box}
 @keyframes ea-hint{0%{transform:translateY(-100%)}100%{transform:translateY(200%)}}
 @keyframes ea-spin{to{transform:rotate(360deg)}}
+html.lenis,html.lenis body{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto!important}
+.lenis.lenis-stopped{overflow:hidden}
 .ea-fcard{width:740px;transform:translate3d(var(--xm),0,var(--z)) rotateY(var(--ry)) translate(-50%,-50%)}
 .ea-step{--w:500px;--gap:60px;width:var(--w);transform:translate3d(calc(var(--s) * (var(--w) + var(--gap))),240px,var(--z)) rotateY(var(--ry)) translate(-50%,-50%)}
 @media (min-width:900px){.ea-fcard{width:clamp(380px,45vw,640px);transform:translate3d(calc(var(--sg) * clamp(170px,400px - 18vw,240px) - (var(--sg) + 1) * 20px),0,var(--z)) rotateY(var(--ry)) translate(-50%,-50%)}.ea-step{--w:clamp(300px,27vw,500px);--gap:40px}}
@@ -422,7 +426,7 @@ a:hover{color:#A9CDFF}
 
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;motion&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;full&quot;,&quot;reduced&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;'auto'|'full'|'reduced'&quot;,&quot;section&quot;:&quot;Experience&quot;},&quot;inertia&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:0.03,&quot;max&quot;:0.3,&quot;step&quot;:0.01,&quot;default&quot;:0.14,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Experience&quot;},&quot;showRail&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Experience&quot;},&quot;logoTreatment&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;white&quot;,&quot;original&quot;],&quot;default&quot;:&quot;original&quot;,&quot;tsType&quot;:&quot;'white'|'original'&quot;,&quot;section&quot;:&quot;Brand&quot;},&quot;billingDefault&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;monthly&quot;,&quot;yearly&quot;],&quot;default&quot;:&quot;monthly&quot;,&quot;tsType&quot;:&quot;'monthly'|'yearly'&quot;,&quot;section&quot;:&quot;Pricing&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;motion&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;full&quot;,&quot;reduced&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;'auto'|'full'|'reduced'&quot;,&quot;section&quot;:&quot;Experience&quot;},&quot;inertia&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:0.03,&quot;max&quot;:0.3,&quot;step&quot;:0.01,&quot;default&quot;:0.22,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Experience&quot;},&quot;showRail&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Experience&quot;},&quot;logoTreatment&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;white&quot;,&quot;original&quot;],&quot;default&quot;:&quot;original&quot;,&quot;tsType&quot;:&quot;'white'|'original'&quot;,&quot;section&quot;:&quot;Brand&quot;},&quot;billingDefault&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;monthly&quot;,&quot;yearly&quot;],&quot;default&quot;:&quot;monthly&quot;,&quot;tsType&quot;:&quot;'monthly'|'yearly'&quot;,&quot;section&quot;:&quot;Pricing&quot;}}">
 const STOPS = [
   { id: 'intro', a: 0, b: 0.03, cam: [0, 0, 1300, 0, 0] },
   { id: 'about', a: 0.11, b: 0.17, cam: [-40, 0, -1100, 0, -2], fx: 440 },
@@ -460,15 +464,62 @@ class Component extends DCLogic {
     window.addEventListener('mousemove', this.onM, { passive: true });
     this.ps = this.targetP();
     this.trackLoading();
-    const loop = t => { this.frame(t); this.raf = requestAnimationFrame(loop); };
+    this.setupAuto();
+    // Lenis smooth scroll (skipped for reduced-motion). Its raf runs first in the page's single
+    // animation loop so the cinematic camera always reads the freshly smoothed scroll position.
+    if (window.Lenis && !this.sysReduced) { this.lenis = new Lenis(); window.__lenis = this.lenis; }
+    const loop = t => { if (this.lenis) this.lenis.raf(t); this.frame(t); this.auto(t); this.raf = requestAnimationFrame(loop); };
     this.raf = requestAnimationFrame(loop);
   }
   componentWillUnmount() {
-    cancelAnimationFrame(this.raf); clearTimeout(this.loadTimer);
+    cancelAnimationFrame(this.raf); clearTimeout(this.loadTimer); this.teardownAuto(); if (this.lenis) { this.lenis.destroy(); this.lenis = null; window.__lenis = null; }
     cancelAnimationFrame(this.rzRaf);
     window.removeEventListener('resize', this.onR);
     window.removeEventListener('load', this.onLoad);
     window.removeEventListener('mousemove', this.onM);
+  }
+  // ---- Automatic scrolling -------------------------------------------------
+  // Slow, constant-speed drift down the page. Any user input pauses it at once and it
+  // resumes after AUTO_IDLE ms without interaction. Manual scrolling always wins.
+  setupAuto() {
+    this.au = { pos: null, expect: 0, last: 0, active: performance.now(), touching: false, hover: false, ramp: 0, lx: -1, ly: -1 };
+    const a = this.au;
+    const act = () => { a.active = performance.now(); a.pos = null; a.ramp = 0; };
+    const INTERACTIVE = 'a,button,input,select,textarea,summary,label,[role=button],[onclick],.ea-cta';
+    this.auH = {
+      wheel: act, keydown: act, mousedown: act, pointerdown: act,
+      touchstart: () => { a.touching = true; act(); },
+      touchmove: act,
+      touchend: () => { a.touching = false; act(); },
+      touchcancel: () => { a.touching = false; act(); },
+      mousemove: e => { if (Math.abs(e.clientX - a.lx) + Math.abs(e.clientY - a.ly) > 2) { a.lx = e.clientX; a.ly = e.clientY; act(); } },
+      mouseover: e => { a.hover = !!(e.target.closest && e.target.closest(INTERACTIVE)); },
+      mouseleave: () => { a.hover = false; },
+    };
+    Object.keys(this.auH).forEach(k => window.addEventListener(k, this.auH[k], { passive: true, capture: true }));
+    document.documentElement.addEventListener('mouseleave', this.auH.mouseleave);
+  }
+  teardownAuto() {
+    if (!this.auH) return;
+    Object.keys(this.auH).forEach(k => window.removeEventListener(k, this.auH[k], { capture: true }));
+    document.documentElement.removeEventListener('mouseleave', this.auH.mouseleave);
+  }
+  auto(now) {
+    const a = this.au; if (!a) return;
+    const dt = a.last ? Math.min(50, now - a.last) / 1000 : 0; a.last = now;
+    const AUTO_SPEED = 140, AUTO_IDLE = 2500, AUTO_RAMP = 1.4;
+    if (!this.state.loaded) { a.active = now; return; }
+    if (this.reduced() || document.hidden || this.state.menu || a.touching || a.hover || now - a.active < AUTO_IDLE) { a.pos = null; a.ramp = 0; return; }
+    const max = document.documentElement.scrollHeight - window.innerHeight, cur = window.scrollY;
+    if (a.pos === null) { a.pos = cur; a.expect = cur; }
+    else if (Math.abs(cur - a.expect) > 2) { a.active = now; a.pos = null; a.ramp = 0; return; } // scrolled by something else (scrollbar, link, keys)
+    if (cur >= max - 1) { a.ramp = 0; return; } // stop at the bottom; never wraps to the top
+    a.ramp = Math.min(1, a.ramp + dt / AUTO_RAMP);
+    const ease = a.ramp * a.ramp * (3 - 2 * a.ramp);
+    const tail = Math.min(1, 0.15 + (max - a.pos) / 250); // glide to a stop near the bottom
+    a.pos = Math.min(max, a.pos + AUTO_SPEED * ease * tail * dt);
+    if (this.lenis) this.lenis.scrollTo(a.pos, { immediate: true, force: true }); else window.scrollTo(0, a.pos);
+    a.expect = a.pos;
   }
   reduced() { const m = this.props.motion ?? 'auto'; return m === 'reduced' || (m === 'auto' && this.sysReduced); }
   trackLoading() {
@@ -540,7 +591,7 @@ class Component extends DCLogic {
       }
       p = this.ps;
     } else {
-      const k = 1 - Math.pow(1 - (this.props.inertia ?? 0.14), dt);
+      const k = 1 - Math.pow(1 - (this.props.inertia ?? 0.22), dt);
       this.ps += (tp - this.ps) * k;
       if (Math.abs(tp - this.ps) < 0.00005) this.ps = tp;
       p = this.ps;
@@ -595,12 +646,13 @@ class Component extends DCLogic {
     const tr = this.trackRef.current; if (!tr) return;
     const s = STOPS[i], mid = i === 0 ? 0 : (s.a + s.b) / 2;
     const top = tr.getBoundingClientRect().top + window.scrollY + unwarp(mid) * (tr.offsetHeight - window.innerHeight);
-    window.scrollTo({ top, behavior: this.reduced() ? 'auto' : 'smooth' });
+    if (this.lenis) this.lenis.scrollTo(top, { duration: 1.4 }); else window.scrollTo({ top, behavior: this.reduced() ? 'auto' : 'smooth' });
   };
   goId = (id) => (e) => {
     const el = document.getElementById(id); if (!el) return;
     e.preventDefault(); this.setState({ menu: false });
-    window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 20, behavior: this.reduced() ? 'auto' : 'smooth' });
+    const goTop = el.getBoundingClientRect().top + window.scrollY - 20;
+    if (this.lenis) this.lenis.scrollTo(goTop, { duration: 1.4 }); else window.scrollTo({ top: goTop, behavior: this.reduced() ? 'auto' : 'smooth' });
   };
 
   renderVals() {
